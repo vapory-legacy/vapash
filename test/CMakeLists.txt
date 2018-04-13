@@ -3,5 +3,6 @@
 
 add_subdirectory(benchmarks)
 add_subdirectory(fakeminer)
+add_subdirectory(fuzzer)
 add_subdirectory(integration)
 add_subdirectory(unittests)

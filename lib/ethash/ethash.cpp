@@ -12,6 +12,12 @@
 #include "params.hpp"
 #include "utils.hpp"
 
+#if defined(__has_attribute) && __has_attribute(no_sanitize)
+#define ATTRIBUTE_NO_SANITIZE_UNSIGNED_INTEGER_OVERFLOW __attribute__((no_sanitize("unsigned-integer-overflow")))
+#else
+#define ATTRIBUTE_NO_SANITIZE_UNSIGNED_INTEGER_OVERFLOW
+#endif
+
 namespace ethash
 {
 // Verify constants:
@@ -22,6 +28,7 @@ static_assert(full_dataset_item_size == ETHASH_FULL_DATASET_ITEM_SIZE, "");
 
 namespace
 {
+ATTRIBUTE_NO_SANITIZE_UNSIGNED_INTEGER_OVERFLOW
 inline uint32_t fnv(uint32_t u, uint32_t v) noexcept
 {
     return (u * 0x01000193) ^ v;
