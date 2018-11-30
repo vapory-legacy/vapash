@@ -143,12 +143,12 @@ void build_l1_cache(uint32_t cache[l1_cache_num_items], const epoch_context& con
 }
 
 
-using mix_array = std::array<std::array<uint32_t, num_regs>, num_lanes>;
+using mix_array = std::array<std::array<uint32_t, num_lanes>, num_regs>;
 
 static void round(const epoch_context& context, uint32_t r, mix_array& mix, mix_rng_state state)
 {
     const uint32_t num_items = static_cast<uint32_t>(context.full_dataset_num_items / 2);
-    const uint32_t item_index = mix[r % num_lanes][0] % num_items;
+    const uint32_t item_index = mix[0][r % num_lanes] % num_items;
     const hash2048 item = calculate_dataset_item_2048(context, item_index);
 
     constexpr size_t num_words_per_lane = sizeof(item) / (sizeof(uint32_t) * num_lanes);
@@ -164,11 +164,13 @@ static void round(const epoch_context& context, uint32_t r, mix_array& mix, mix_
             const auto src = state.next_src();
             const auto dst = state.next_dst();
             const auto sel = state.rng();
+            auto& src_row = mix[src];
+            auto& dst_row = mix[dst];
 
             for (size_t l = 0; l < num_lanes; ++l)
             {
-                const size_t offset = mix[l][src] % l1_cache_num_items;
-                random_merge(mix[l][dst], context.l1_cache[offset], sel);
+                const size_t offset = src_row[l] % l1_cache_num_items;
+                random_merge(dst_row[l], context.l1_cache[offset], sel);
             }
         }
         if (i < num_math_operations)
@@ -179,11 +181,14 @@ static void round(const epoch_context& context, uint32_t r, mix_array& mix, mix_
             const auto sel1 = state.rng();
             const auto dst = state.next_dst();
             const auto sel2 = state.rng();
+            auto& src_row1 = mix[src1];
+            auto& src_row2 = mix[src2];
+            auto& dst_row = mix[dst];
 
             for (size_t l = 0; l < num_lanes; ++l)
             {
-                const uint32_t data = random_math(mix[l][src1], mix[l][src2], sel1);
-                random_merge(mix[l][dst], data, sel2);
+                const uint32_t data = random_math(src_row1[l], src_row2[l], sel1);
+                random_merge(dst_row[l], data, sel2);
             }
         }
     }
@@ -204,7 +209,7 @@ static void round(const epoch_context& context, uint32_t r, mix_array& mix, mix_
         for (size_t i = 0; i < num_words_per_lane; ++i)
         {
             const auto word = le::uint32(item.word32s[offset + i]);
-            random_merge(mix[l][dsts[i]], word, sels[i]);
+            random_merge(mix[dsts[i]][l], word, sels[i]);
         }
     }
 }
@@ -215,14 +220,15 @@ mix_array init_mix(uint64_t seed)
     const uint32_t w = fnv1a(z, static_cast<uint32_t>(seed >> 32));
 
     mix_array mix;
-    for (uint32_t l = 0; l < mix.size(); ++l)
+    for (uint32_t l = 0; l < mix[0].size(); ++l)
     {
         const uint32_t jsr = fnv1a(w, l);
         const uint32_t jcong = fnv1a(jsr, l);
         kiss99 rng{z, w, jsr, jcong};
 
-        for (auto& row : mix[l])
-            row = rng();
+        for (auto& row : mix)
+            row[l] = rng();
+
     }
     return mix;
 }
@@ -243,7 +249,7 @@ hash256 hash_mix(const epoch_context& context, int block_number, uint64_t seed) 
     {
         lane_hash[l] = fnv_offset_basis;
         for (uint32_t i = 0; i < num_regs; ++i)
-            lane_hash[l] = fnv1a(lane_hash[l], mix[l][i]);
+            lane_hash[l] = fnv1a(lane_hash[l], mix[i][l]);
     }
 
     // Reduce all lanes to a single 256-bit result.
