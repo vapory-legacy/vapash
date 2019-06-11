@@ -40,6 +40,8 @@ if(CABLE_COMPILER_GNULIKE)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Og")
 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
+
     option(ETHASH_NATIVE "Build for native CPU" OFF)
     if(ETHASH_NATIVE)
         add_compile_options(-march=native)
