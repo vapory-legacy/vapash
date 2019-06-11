@@ -54,8 +54,8 @@ hash2048 calculate_dataset_item_2048(const epoch_context& context, uint32_t inde
 
 namespace generic
 {
-using hash_fn_512 = hash512 (*)(const uint8_t* data, size_t size);
-using build_light_cache_fn = void (*)(hash512 cache[], int num_items, const hash256& seed);
+using hash_fn_512 = hash512 (*)(const uint8_t* data, size_t size) noexcept;
+using build_light_cache_fn = void (*)(hash512 cache[], int num_items, const hash256& seed) noexcept;
 
 void build_light_cache(
     hash_fn_512 hash_fn, hash512 cache[], int num_items, const hash256& seed) noexcept;

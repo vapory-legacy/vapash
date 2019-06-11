@@ -170,7 +170,7 @@ using lookup_fn = hash2048 (*)(const epoch_context&, uint32_t);
 using mix_array = std::array<std::array<uint32_t, num_regs>, num_lanes>;
 
 void round(
-    const epoch_context& context, uint32_t r, mix_array& mix, mix_rng_state state, lookup_fn lookup)
+    const epoch_context& context, uint32_t r, mix_array& mix, mix_rng_state state, lookup_fn lookup) noexcept
 {
     const uint32_t num_items = static_cast<uint32_t>(context.full_dataset_num_items / 2);
     const uint32_t item_index = mix[r % num_lanes][0] % num_items;
@@ -237,7 +237,7 @@ void round(
     }
 }
 
-mix_array init_mix(uint64_t seed)
+mix_array init_mix(uint64_t seed) noexcept
 {
     const uint32_t z = fnv1a(fnv_offset_basis, static_cast<uint32_t>(seed));
     const uint32_t w = fnv1a(z, static_cast<uint32_t>(seed >> 32));
