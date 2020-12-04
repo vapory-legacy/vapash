@@ -19,7 +19,7 @@ void fake_keccakf1600(uint64_t* state) noexcept
 
 static void keccakf1600(benchmark::State& state)
 {
-    uint64_t keccak_state[25] = {};
+    uint64_t keccak_state[5][5] = {};
 
     for (auto _ : state)
     {
@@ -71,7 +71,7 @@ static void keccak512(benchmark::State& state)
 BENCHMARK(keccak512)->Arg(32)->Arg(64)->Arg(71)->Arg(72)->Arg(142)->Arg(143)->Arg(144);
 
 
-template<void keccak_fn(uint64_t*, const uint8_t*, size_t)>
+template <void keccak_fn(uint64_t*, const uint8_t*, size_t)>
 static void fake_keccak256(benchmark::State& state)
 {
     std::vector<uint8_t> data(static_cast<size_t>(state.range(0)), 0xaa);
@@ -83,12 +83,24 @@ static void fake_keccak256(benchmark::State& state)
         benchmark::DoNotOptimize(out);
     }
 }
-BENCHMARK_TEMPLATE(fake_keccak256, fake_keccak256_default_aligned)->Arg(128)->Arg(17 * 8)->Arg(4096)->Arg(16 * 1024);
-BENCHMARK_TEMPLATE(fake_keccak256, fake_keccak256_default)->Arg(128)->Arg(17 * 8)->Arg(4096)->Arg(16 * 1024);
-BENCHMARK_TEMPLATE(fake_keccak256, fake_keccak256_fastest)->Arg(128)->Arg(17 * 8)->Arg(4096)->Arg(16 * 1024);
+BENCHMARK_TEMPLATE(fake_keccak256, fake_keccak256_default_aligned)
+    ->Arg(128)
+    ->Arg(17 * 8)
+    ->Arg(4096)
+    ->Arg(16 * 1024);
+BENCHMARK_TEMPLATE(fake_keccak256, fake_keccak256_default)
+    ->Arg(128)
+    ->Arg(17 * 8)
+    ->Arg(4096)
+    ->Arg(16 * 1024);
+BENCHMARK_TEMPLATE(fake_keccak256, fake_keccak256_fastest)
+    ->Arg(128)
+    ->Arg(17 * 8)
+    ->Arg(4096)
+    ->Arg(16 * 1024);
 
 
-template<void keccak_fn(uint64_t*, const uint8_t*, size_t)>
+template <void keccak_fn(uint64_t*, const uint8_t*, size_t)>
 static void fake_keccak256_unaligned(benchmark::State& state)
 {
     const auto size = static_cast<size_t>(state.range(0));
@@ -101,8 +113,16 @@ static void fake_keccak256_unaligned(benchmark::State& state)
         benchmark::DoNotOptimize(out);
     }
 }
-BENCHMARK_TEMPLATE(fake_keccak256_unaligned, fake_keccak256_default)->Arg(128)->Arg(17 * 8)->Arg(4096)->Arg(16 * 1024);
-BENCHMARK_TEMPLATE(fake_keccak256_unaligned, fake_keccak256_fastest)->Arg(128)->Arg(17 * 8)->Arg(4096)->Arg(16 * 1024);
+BENCHMARK_TEMPLATE(fake_keccak256_unaligned, fake_keccak256_default)
+    ->Arg(128)
+    ->Arg(17 * 8)
+    ->Arg(4096)
+    ->Arg(16 * 1024);
+BENCHMARK_TEMPLATE(fake_keccak256_unaligned, fake_keccak256_fastest)
+    ->Arg(128)
+    ->Arg(17 * 8)
+    ->Arg(4096)
+    ->Arg(16 * 1024);
 
 
 static void fake_keccak256_word4(benchmark::State& state)

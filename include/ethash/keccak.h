@@ -6,7 +6,6 @@
 #pragma once
 
 #include <ethash/hash_types.h>
-
 #include <stddef.h>
 
 #ifdef __cplusplus
@@ -27,7 +26,7 @@ extern "C" {
  *
  * @param state  The state of 25 64-bit words on which the permutation is to be performed.
  */
-void ethash_keccakf1600(uint64_t state[25]) NOEXCEPT;
+void ethash_keccakf1600(uint64_t state[5][5]) NOEXCEPT;
 
 /**
  * The Keccak-f[800] function.

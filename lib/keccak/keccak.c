@@ -2,8 +2,8 @@
 // Copyright 2018-2019 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0.
 
-#include <ethash/keccak.h>
 #include "../support/attributes.h"
+#include <ethash/keccak.h>
 
 #if _MSC_VER
 #include <string.h>
@@ -48,18 +48,14 @@ static inline ALWAYS_INLINE void keccak(
     const size_t hash_size = bits / 8;
     const size_t block_size = (1600 - bits * 2) / 8;
 
-    size_t i;
-    uint64_t* state_iter;
-    uint64_t last_word = 0;
-    uint8_t* last_word_iter = (uint8_t*)&last_word;
-
-    uint64_t state[25] = {0};
+    uint64_t state[5][5] = {0};
+    uint64_t* const state_flat = &state[0][0];
 
     while (size >= block_size)
     {
-        for (i = 0; i < (block_size / word_size); ++i)
+        for (size_t i = 0; i < (block_size / word_size); ++i)
         {
-            state[i] ^= load_le(data);
+            state_flat[i] ^= load_le(data);
             data += word_size;
         }
 
@@ -68,8 +64,7 @@ static inline ALWAYS_INLINE void keccak(
         size -= block_size;
     }
 
-    state_iter = state;
-
+    uint64_t* state_iter = state_flat;
     while (size >= word_size)
     {
         *state_iter ^= load_le(data);
@@ -78,6 +73,8 @@ static inline ALWAYS_INLINE void keccak(
         size -= word_size;
     }
 
+    uint64_t last_word = 0;
+    uint8_t* last_word_iter = (uint8_t*)&last_word;
     while (size > 0)
     {
         *last_word_iter = *data;
@@ -88,12 +85,12 @@ static inline ALWAYS_INLINE void keccak(
     *last_word_iter = 0x01;
     *state_iter ^= to_le64(last_word);
 
-    state[(block_size / word_size) - 1] ^= 0x8000000000000000;
+    state_flat[(block_size / word_size) - 1] ^= 0x8000000000000000;
 
     ethash_keccakf1600(state);
 
-    for (i = 0; i < (hash_size / word_size); ++i)
-        out[i] = to_le64(state[i]);
+    for (size_t i = 0; i < (hash_size / word_size); ++i)
+        out[i] = to_le64(state_flat[i]);
 }
 
 union ethash_hash256 ethash_keccak256(const uint8_t* data, size_t size)

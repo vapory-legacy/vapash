@@ -43,7 +43,7 @@ static const uint64_t round_constants[24] = {
 /// The implementation based on:
 /// - "simple" implementation by Ronny Van Keer, included in "Reference and optimized code in C",
 ///   https://keccak.team/archives.html, CC0-1.0 / Public Domain.
-void ethash_keccakf1600(uint64_t state[25])
+void ethash_keccakf1600(uint64_t state[5][5])
 {
     uint64_t Aba, Abe, Abi, Abo, Abu;
     uint64_t Aga, Age, Agi, Ago, Agu;
@@ -61,31 +61,31 @@ void ethash_keccakf1600(uint64_t state[25])
 
     uint64_t Da, De, Di, Do, Du;
 
-    Aba = state[0];
-    Abe = state[1];
-    Abi = state[2];
-    Abo = state[3];
-    Abu = state[4];
-    Aga = state[5];
-    Age = state[6];
-    Agi = state[7];
-    Ago = state[8];
-    Agu = state[9];
-    Aka = state[10];
-    Ake = state[11];
-    Aki = state[12];
-    Ako = state[13];
-    Aku = state[14];
-    Ama = state[15];
-    Ame = state[16];
-    Ami = state[17];
-    Amo = state[18];
-    Amu = state[19];
-    Asa = state[20];
-    Ase = state[21];
-    Asi = state[22];
-    Aso = state[23];
-    Asu = state[24];
+    Aba = state[0][0];
+    Abe = state[0][1];
+    Abi = state[0][2];
+    Abo = state[0][3];
+    Abu = state[0][4];
+    Aga = state[1][0];
+    Age = state[1][1];
+    Agi = state[1][2];
+    Ago = state[1][3];
+    Agu = state[1][4];
+    Aka = state[2][0];
+    Ake = state[2][1];
+    Aki = state[2][2];
+    Ako = state[2][3];
+    Aku = state[2][4];
+    Ama = state[3][0];
+    Ame = state[3][1];
+    Ami = state[3][2];
+    Amo = state[3][3];
+    Amu = state[3][4];
+    Asa = state[4][0];
+    Ase = state[4][1];
+    Asi = state[4][2];
+    Aso = state[4][3];
+    Asu = state[4][4];
 
     for (int round = 0; round < 24; round += 2)
     {
@@ -229,29 +229,29 @@ void ethash_keccakf1600(uint64_t state[25])
         Asu = Bu ^ (~Ba & Be);
     }
 
-    state[0] = Aba;
-    state[1] = Abe;
-    state[2] = Abi;
-    state[3] = Abo;
-    state[4] = Abu;
-    state[5] = Aga;
-    state[6] = Age;
-    state[7] = Agi;
-    state[8] = Ago;
-    state[9] = Agu;
-    state[10] = Aka;
-    state[11] = Ake;
-    state[12] = Aki;
-    state[13] = Ako;
-    state[14] = Aku;
-    state[15] = Ama;
-    state[16] = Ame;
-    state[17] = Ami;
-    state[18] = Amo;
-    state[19] = Amu;
-    state[20] = Asa;
-    state[21] = Ase;
-    state[22] = Asi;
-    state[23] = Aso;
-    state[24] = Asu;
+    state[0][0] = Aba;
+    state[0][1] = Abe;
+    state[0][2] = Abi;
+    state[0][3] = Abo;
+    state[0][4] = Abu;
+    state[1][0] = Aga;
+    state[1][1] = Age;
+    state[1][2] = Agi;
+    state[1][3] = Ago;
+    state[1][4] = Agu;
+    state[2][0] = Aka;
+    state[2][1] = Ake;
+    state[2][2] = Aki;
+    state[2][3] = Ako;
+    state[2][4] = Aku;
+    state[3][0] = Ama;
+    state[3][1] = Ame;
+    state[3][2] = Ami;
+    state[3][3] = Amo;
+    state[3][4] = Amu;
+    state[4][0] = Asa;
+    state[4][1] = Ase;
+    state[4][2] = Asi;
+    state[4][3] = Aso;
+    state[4][4] = Asu;
 }
