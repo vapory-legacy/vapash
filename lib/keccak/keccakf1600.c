@@ -53,11 +53,10 @@ void ethash_keccakf1600(uint64_t state[5][5])
     uint64_t Ema, Eme, Emi, Emo, Emu;
     uint64_t Esa, Ese, Esi, Eso, Esu;
 
-    uint64_t Da, De, Di, Do, Du;
-
     for (int round = 0; round < 24; round += 2)
     {
         uint64_t C[5];
+        uint64_t D[5];
 
         /* Round (round + 0): A -> Exx */
 
@@ -67,61 +66,61 @@ void ethash_keccakf1600(uint64_t state[5][5])
         C[3] = A[0][3] ^ A[1][3] ^ A[2][3] ^ A[3][3] ^ A[4][3];
         C[4] = A[0][4] ^ A[1][4] ^ A[2][4] ^ A[3][4] ^ A[4][4];
 
-        Da = C[4] ^ rol(C[1], 1);
-        De = C[0] ^ rol(C[2], 1);
-        Di = C[1] ^ rol(C[3], 1);
-        Do = C[2] ^ rol(C[4], 1);
-        Du = C[3] ^ rol(C[0], 1);
+        D[0] = C[4] ^ rol(C[1], 1);
+        D[1] = C[0] ^ rol(C[2], 1);
+        D[2] = C[1] ^ rol(C[3], 1);
+        D[3] = C[2] ^ rol(C[4], 1);
+        D[4] = C[3] ^ rol(C[0], 1);
 
-        C[0] = A[0][0] ^ Da;
-        C[1] = rol(A[1][1] ^ De, 44);
-        C[2] = rol(A[2][2] ^ Di, 43);
-        C[3] = rol(A[3][3] ^ Do, 21);
-        C[4] = rol(A[4][4] ^ Du, 14);
+        C[0] = A[0][0] ^ D[0];
+        C[1] = rol(A[1][1] ^ D[1], 44);
+        C[2] = rol(A[2][2] ^ D[2], 43);
+        C[3] = rol(A[3][3] ^ D[3], 21);
+        C[4] = rol(A[4][4] ^ D[4], 14);
         Eba = C[0] ^ (~C[1] & C[2]) ^ round_constants[round];
         Ebe = C[1] ^ (~C[2] & C[3]);
         Ebi = C[2] ^ (~C[3] & C[4]);
         Ebo = C[3] ^ (~C[4] & C[0]);
         Ebu = C[4] ^ (~C[0] & C[1]);
 
-        C[0] = rol(A[0][3] ^ Do, 28);
-        C[1] = rol(A[1][4] ^ Du, 20);
-        C[2] = rol(A[2][0] ^ Da, 3);
-        C[3] = rol(A[3][1] ^ De, 45);
-        C[4] = rol(A[4][2] ^ Di, 61);
+        C[0] = rol(A[0][3] ^ D[3], 28);
+        C[1] = rol(A[1][4] ^ D[4], 20);
+        C[2] = rol(A[2][0] ^ D[0], 3);
+        C[3] = rol(A[3][1] ^ D[1], 45);
+        C[4] = rol(A[4][2] ^ D[2], 61);
         Ega = C[0] ^ (~C[1] & C[2]);
         Ege = C[1] ^ (~C[2] & C[3]);
         Egi = C[2] ^ (~C[3] & C[4]);
         Ego = C[3] ^ (~C[4] & C[0]);
         Egu = C[4] ^ (~C[0] & C[1]);
 
-        C[0] = rol(A[0][1] ^ De, 1);
-        C[1] = rol(A[1][2] ^ Di, 6);
-        C[2] = rol(A[2][3] ^ Do, 25);
-        C[3] = rol(A[3][4] ^ Du, 8);
-        C[4] = rol(A[4][0] ^ Da, 18);
+        C[0] = rol(A[0][1] ^ D[1], 1);
+        C[1] = rol(A[1][2] ^ D[2], 6);
+        C[2] = rol(A[2][3] ^ D[3], 25);
+        C[3] = rol(A[3][4] ^ D[4], 8);
+        C[4] = rol(A[4][0] ^ D[0], 18);
         Eka = C[0] ^ (~C[1] & C[2]);
         Eke = C[1] ^ (~C[2] & C[3]);
         Eki = C[2] ^ (~C[3] & C[4]);
         Eko = C[3] ^ (~C[4] & C[0]);
         Eku = C[4] ^ (~C[0] & C[1]);
 
-        C[0] = rol(A[0][4] ^ Du, 27);
-        C[1] = rol(A[1][0] ^ Da, 36);
-        C[2] = rol(A[2][1] ^ De, 10);
-        C[3] = rol(A[3][2] ^ Di, 15);
-        C[4] = rol(A[4][3] ^ Do, 56);
+        C[0] = rol(A[0][4] ^ D[4], 27);
+        C[1] = rol(A[1][0] ^ D[0], 36);
+        C[2] = rol(A[2][1] ^ D[1], 10);
+        C[3] = rol(A[3][2] ^ D[2], 15);
+        C[4] = rol(A[4][3] ^ D[3], 56);
         Ema = C[0] ^ (~C[1] & C[2]);
         Eme = C[1] ^ (~C[2] & C[3]);
         Emi = C[2] ^ (~C[3] & C[4]);
         Emo = C[3] ^ (~C[4] & C[0]);
         Emu = C[4] ^ (~C[0] & C[1]);
 
-        C[0] = rol(A[0][2] ^ Di, 62);
-        C[1] = rol(A[1][3] ^ Do, 55);
-        C[2] = rol(A[2][4] ^ Du, 39);
-        C[3] = rol(A[3][0] ^ Da, 41);
-        C[4] = rol(A[4][1] ^ De, 2);
+        C[0] = rol(A[0][2] ^ D[2], 62);
+        C[1] = rol(A[1][3] ^ D[3], 55);
+        C[2] = rol(A[2][4] ^ D[4], 39);
+        C[3] = rol(A[3][0] ^ D[0], 41);
+        C[4] = rol(A[4][1] ^ D[1], 2);
         Esa = C[0] ^ (~C[1] & C[2]);
         Ese = C[1] ^ (~C[2] & C[3]);
         Esi = C[2] ^ (~C[3] & C[4]);
@@ -137,61 +136,61 @@ void ethash_keccakf1600(uint64_t state[5][5])
         C[3] = Ebo ^ Ego ^ Eko ^ Emo ^ Eso;
         C[4] = Ebu ^ Egu ^ Eku ^ Emu ^ Esu;
 
-        Da = C[4] ^ rol(C[1], 1);
-        De = C[0] ^ rol(C[2], 1);
-        Di = C[1] ^ rol(C[3], 1);
-        Do = C[2] ^ rol(C[4], 1);
-        Du = C[3] ^ rol(C[0], 1);
+        D[0] = C[4] ^ rol(C[1], 1);
+        D[1] = C[0] ^ rol(C[2], 1);
+        D[2] = C[1] ^ rol(C[3], 1);
+        D[3] = C[2] ^ rol(C[4], 1);
+        D[4] = C[3] ^ rol(C[0], 1);
 
-        C[0] = Eba ^ Da;
-        C[1] = rol(Ege ^ De, 44);
-        C[2] = rol(Eki ^ Di, 43);
-        C[3] = rol(Emo ^ Do, 21);
-        C[4] = rol(Esu ^ Du, 14);
+        C[0] = Eba ^ D[0];
+        C[1] = rol(Ege ^ D[1], 44);
+        C[2] = rol(Eki ^ D[2], 43);
+        C[3] = rol(Emo ^ D[3], 21);
+        C[4] = rol(Esu ^ D[4], 14);
         A[0][0] = C[0] ^ (~C[1] & C[2]) ^ round_constants[round + 1];
         A[0][1] = C[1] ^ (~C[2] & C[3]);
         A[0][2] = C[2] ^ (~C[3] & C[4]);
         A[0][3] = C[3] ^ (~C[4] & C[0]);
         A[0][4] = C[4] ^ (~C[0] & C[1]);
 
-        C[0] = rol(Ebo ^ Do, 28);
-        C[1] = rol(Egu ^ Du, 20);
-        C[2] = rol(Eka ^ Da, 3);
-        C[3] = rol(Eme ^ De, 45);
-        C[4] = rol(Esi ^ Di, 61);
+        C[0] = rol(Ebo ^ D[3], 28);
+        C[1] = rol(Egu ^ D[4], 20);
+        C[2] = rol(Eka ^ D[0], 3);
+        C[3] = rol(Eme ^ D[1], 45);
+        C[4] = rol(Esi ^ D[2], 61);
         A[1][0] = C[0] ^ (~C[1] & C[2]);
         A[1][1] = C[1] ^ (~C[2] & C[3]);
         A[1][2] = C[2] ^ (~C[3] & C[4]);
         A[1][3] = C[3] ^ (~C[4] & C[0]);
         A[1][4] = C[4] ^ (~C[0] & C[1]);
 
-        C[0] = rol(Ebe ^ De, 1);
-        C[1] = rol(Egi ^ Di, 6);
-        C[2] = rol(Eko ^ Do, 25);
-        C[3] = rol(Emu ^ Du, 8);
-        C[4] = rol(Esa ^ Da, 18);
+        C[0] = rol(Ebe ^ D[1], 1);
+        C[1] = rol(Egi ^ D[2], 6);
+        C[2] = rol(Eko ^ D[3], 25);
+        C[3] = rol(Emu ^ D[4], 8);
+        C[4] = rol(Esa ^ D[0], 18);
         A[2][0] = C[0] ^ (~C[1] & C[2]);
         A[2][1] = C[1] ^ (~C[2] & C[3]);
         A[2][2] = C[2] ^ (~C[3] & C[4]);
         A[2][3] = C[3] ^ (~C[4] & C[0]);
         A[2][4] = C[4] ^ (~C[0] & C[1]);
 
-        C[0] = rol(Ebu ^ Du, 27);
-        C[1] = rol(Ega ^ Da, 36);
-        C[2] = rol(Eke ^ De, 10);
-        C[3] = rol(Emi ^ Di, 15);
-        C[4] = rol(Eso ^ Do, 56);
+        C[0] = rol(Ebu ^ D[4], 27);
+        C[1] = rol(Ega ^ D[0], 36);
+        C[2] = rol(Eke ^ D[1], 10);
+        C[3] = rol(Emi ^ D[2], 15);
+        C[4] = rol(Eso ^ D[3], 56);
         A[3][0] = C[0] ^ (~C[1] & C[2]);
         A[3][1] = C[1] ^ (~C[2] & C[3]);
         A[3][2] = C[2] ^ (~C[3] & C[4]);
         A[3][3] = C[3] ^ (~C[4] & C[0]);
         A[3][4] = C[4] ^ (~C[0] & C[1]);
 
-        C[0] = rol(Ebi ^ Di, 62);
-        C[1] = rol(Ego ^ Do, 55);
-        C[2] = rol(Eku ^ Du, 39);
-        C[3] = rol(Ema ^ Da, 41);
-        C[4] = rol(Ese ^ De, 2);
+        C[0] = rol(Ebi ^ D[2], 62);
+        C[1] = rol(Ego ^ D[3], 55);
+        C[2] = rol(Eku ^ D[4], 39);
+        C[3] = rol(Ema ^ D[0], 41);
+        C[4] = rol(Ese ^ D[1], 2);
         A[4][0] = C[0] ^ (~C[1] & C[2]);
         A[4][1] = C[1] ^ (~C[2] & C[3]);
         A[4][2] = C[2] ^ (~C[3] & C[4]);
