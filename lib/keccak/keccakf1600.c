@@ -42,7 +42,11 @@ static const uint64_t round_constants[24] = {
 ///
 /// The implementation based on:
 /// - "simple" implementation by Ronny Van Keer, included in "Reference and optimized code in C",
-///   https://keccak.team/archives.html, CC0-1.0 / Public Domain.
+///   https://keccak.team/archives.html,
+///   CC0-1.0 / Public Domain.
+/// - OpenSSL's Keccak implementation KECCAK_2X without KECCAK_COMPLEMENTING_TRANSFORM,
+///   https://github.com/openssl/openssl/blob/openssl-3.0.0-alpha9/crypto/sha/keccak1600.c,
+///   Apache-2.0.
 void ethash_keccakf1600(uint64_t state[5][5])
 {
     uint64_t(*A)[5] = state;
@@ -50,12 +54,13 @@ void ethash_keccakf1600(uint64_t state[5][5])
     // Temporary intermediate state being the result of odd rounds (A -> E).
     uint64_t E[5][5];
 
-    for (int round = 0; round < 24; round += 2)
+    // Execute all permutation rounds with unrolling of 2.
+    for (int n = 0; n < 24; n += 2)
     {
         uint64_t C[5];
         uint64_t D[5];
 
-        /* Round (round + 0): A -> E */
+        /* Round (n + 0): A -> E */
 
         C[0] = A[0][0] ^ A[1][0] ^ A[2][0] ^ A[3][0] ^ A[4][0];
         C[1] = A[0][1] ^ A[1][1] ^ A[2][1] ^ A[3][1] ^ A[4][1];
@@ -74,7 +79,7 @@ void ethash_keccakf1600(uint64_t state[5][5])
         C[2] = rol(A[2][2] ^ D[2], 43);
         C[3] = rol(A[3][3] ^ D[3], 21);
         C[4] = rol(A[4][4] ^ D[4], 14);
-        E[0][0] = C[0] ^ (~C[1] & C[2]) ^ round_constants[round];
+        E[0][0] = C[0] ^ (~C[1] & C[2]) ^ round_constants[n];
         E[0][1] = C[1] ^ (~C[2] & C[3]);
         E[0][2] = C[2] ^ (~C[3] & C[4]);
         E[0][3] = C[3] ^ (~C[4] & C[0]);
@@ -125,7 +130,7 @@ void ethash_keccakf1600(uint64_t state[5][5])
         E[4][4] = C[4] ^ (~C[0] & C[1]);
 
 
-        /* Round (round + 1): E -> A */
+        /* Round (n + 1): E -> A */
 
         C[0] = E[0][0] ^ E[1][0] ^ E[2][0] ^ E[3][0] ^ E[4][0];
         C[1] = E[0][1] ^ E[1][1] ^ E[2][1] ^ E[3][1] ^ E[4][1];
@@ -144,7 +149,7 @@ void ethash_keccakf1600(uint64_t state[5][5])
         C[2] = rol(E[2][2] ^ D[2], 43);
         C[3] = rol(E[3][3] ^ D[3], 21);
         C[4] = rol(E[4][4] ^ D[4], 14);
-        A[0][0] = C[0] ^ (~C[1] & C[2]) ^ round_constants[round + 1];
+        A[0][0] = C[0] ^ (~C[1] & C[2]) ^ round_constants[n + 1];
         A[0][1] = C[1] ^ (~C[2] & C[3]);
         A[0][2] = C[2] ^ (~C[3] & C[4]);
         A[0][3] = C[3] ^ (~C[4] & C[0]);
