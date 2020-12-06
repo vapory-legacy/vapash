@@ -19,7 +19,7 @@ void fake_keccakf1600(uint64_t* state) noexcept
 
 static void keccakf1600(benchmark::State& state)
 {
-    uint64_t keccak_state[5][5] = {};
+    uint64_t keccak_state[25] = {};
 
     for (auto _ : state)
     {
