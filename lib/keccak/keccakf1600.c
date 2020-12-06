@@ -2,6 +2,7 @@
 // Copyright 2018-2019 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0.
 
+#include "../support/attributes.h"
 #include <ethash/keccak.h>
 
 /// Rotates the bits of x left by the count value specified by s.
@@ -40,7 +41,7 @@ static const uint64_t round_constants[24] = {
 
 /// Performs n-th Keccak-f[1600] permutation round, taking A as the initial state
 /// and putting the result state to E.
-static inline void permute_round(uint64_t E[5][5], uint64_t A[5][5], int n)
+static inline ALWAYS_INLINE void permute_round(uint64_t E[5][5], uint64_t A[5][5], int n)
 {
     uint64_t C[5];
     uint64_t D[5];
