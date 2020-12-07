@@ -137,3 +137,18 @@ void ethash_keccakf1600(uint64_t state[25])
         permute_round(A, E, n + 1);  // Round (n + 1): E -> A.
     }
 }
+
+__attribute__((target("bmi,bmi2"))) void ethash_keccakf1600_bmi(uint64_t state[25])
+{
+    uint64_t* A = state;
+
+    // Temporary intermediate state being the result of odd rounds (A -> E).
+    uint64_t E[25];
+
+    // Execute all permutation rounds with unrolling of 2.
+    for (int n = 0; n < 24; n += 2)
+    {
+        permute_round(E, A, n);      // Round (n): A -> E.
+        permute_round(A, E, n + 1);  // Round (n + 1): E -> A.
+    }
+}

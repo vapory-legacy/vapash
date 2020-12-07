@@ -27,6 +27,7 @@ extern "C" {
  * @param state  The state of 25 64-bit words on which the permutation is to be performed.
  */
 void ethash_keccakf1600(uint64_t state[25]) NOEXCEPT;
+void ethash_keccakf1600_bmi(uint64_t state[25]) NOEXCEPT;
 
 /**
  * The Keccak-f[800] function.
