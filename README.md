@@ -1,8 +1,8 @@
-# Ethash
+# Vapash
 
 [![readme style standard](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-> C/C++ implementation of Ethash – the Ethereum Proof of Work algorithm
+> C/C++ implementation of Vapash – the Vapory Proof of Work algorithm
 
 
 ## Table of Contents
