@@ -3,10 +3,10 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-project(ethash-cmake-config-test)
+project(vapash-cmake-config-test)
 
-find_package(ethash CONFIG REQUIRED)
+find_package(vapash CONFIG REQUIRED)
 
-add_executable(ethash-cmake-config-test cmake_config_test.cpp)
-target_link_libraries(ethash-cmake-config-test ethash::ethash)
-set_target_properties(ethash-cmake-config-test PROPERTIES CXX_STANDARD 11 CXX_EXTENSIONS OFF)
+add_executable(vapash-cmake-config-test cmake_config_test.cpp)
+target_link_libraries(vapash-cmake-config-test vapash::vapash)
+set_target_properties(vapash-cmake-config-test PROPERTIES CXX_STANDARD 11 CXX_EXTENSIONS OFF)

@@ -1,14 +1,14 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
-#include <ethash/keccak.hpp>
+#include <vapash/keccak.hpp>
 
 #include "helpers.hpp"
 
 #include <gtest/gtest.h>
 
-using namespace ethash;
+using namespace vapash;
 
 struct keccak_test_case
 {
@@ -243,8 +243,8 @@ TEST(keccak, hpp_aliases)
 {
     uint8_t data[64] = {42};
 
-    EXPECT_EQ(keccak256_32(data).word64s[1], ethash_keccak256_32(data).word64s[1]);
-    EXPECT_EQ(keccak512_64(data).word64s[1], ethash_keccak512_64(data).word64s[1]);
+    EXPECT_EQ(keccak256_32(data).word64s[1], vapash_keccak256_32(data).word64s[1]);
+    EXPECT_EQ(keccak512_64(data).word64s[1], vapash_keccak512_64(data).word64s[1]);
 }
 
 TEST(keccak, f800)
@@ -259,7 +259,7 @@ TEST(keccak, f800)
         0xB15CD054, 0x1BF4FC0E, 0x6166FA91, 0x1A9E599A, 0xA3970A1F, 0xAB659687, 0xAFAB8D68,
         0xE74B1015, 0x34001A98, 0x4119EFF3, 0x930A0E76, 0x87B28070, 0x11EFE996};
 
-    ethash_keccakf800(state);
+    vapash_keccakf800(state);
     for (size_t i = 0; i < 25; ++i)
         EXPECT_EQ(state[i], expected_state_0[i]);
 
@@ -268,7 +268,7 @@ TEST(keccak, f800)
         0x51EDB5DE, 0x0E9702D9, 0x6C19AA16, 0xA2913EEE, 0x60754E9A, 0x9819063C, 0xF4709254,
         0xD09F9084, 0x772DA259, 0x1DB35DF7, 0x5AA60162, 0x358825D5, 0xB3783BAB};
 
-    ethash_keccakf800(state);
+    vapash_keccakf800(state);
     for (size_t i = 0; i < 25; ++i)
         EXPECT_EQ(state[i], expected_state_1[i]);
 }

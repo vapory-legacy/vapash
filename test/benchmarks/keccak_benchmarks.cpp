@@ -1,11 +1,11 @@
-// Ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// Vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
 #include "keccak_utils.hpp"
 
-#include <ethash/keccak.h>
-#include <ethash/keccak.hpp>
+#include <vapash/keccak.h>
+#include <vapash/keccak.hpp>
 
 #include <benchmark/benchmark.h>
 
@@ -23,7 +23,7 @@ static void keccakf1600(benchmark::State& state)
 
     for (auto _ : state)
     {
-        ethash_keccakf1600(keccak_state);
+        vapash_keccakf1600(keccak_state);
         benchmark::DoNotOptimize(keccak_state);
     }
 }
@@ -36,7 +36,7 @@ static void keccakf800(benchmark::State& state)
 
     for (auto _ : state)
     {
-        ethash_keccakf800(keccak_state);
+        vapash_keccakf800(keccak_state);
         benchmark::DoNotOptimize(keccak_state);
     }
 }
@@ -50,7 +50,7 @@ static void keccak256(benchmark::State& state)
 
     for (auto _ : state)
     {
-        auto h = ethash_keccak256(data.data(), data.size());
+        auto h = vapash_keccak256(data.data(), data.size());
         benchmark::DoNotOptimize(h.bytes);
     }
 }
@@ -64,7 +64,7 @@ static void keccak512(benchmark::State& state)
 
     for (auto _ : state)
     {
-        auto h = ethash_keccak512(data.data(), data.size());
+        auto h = vapash_keccak512(data.data(), data.size());
         benchmark::DoNotOptimize(h.bytes);
     }
 }

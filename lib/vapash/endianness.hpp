@@ -3,14 +3,14 @@
 
 /// @file
 /// This file contains helper functions to handle big-endian architectures.
-/// The Ethash algorithm is naturally defined for little-endian architectures
+/// The Vapash algorithm is naturally defined for little-endian architectures
 /// so for those the helpers are just no-op empty functions.
 /// For big-endian architectures we need 32-bit and 64-bit byte swapping in
 /// some places.
 
 #pragma once
 
-#include <ethash/ethash.hpp>
+#include <vapash/vapash.hpp>
 
 #if _WIN32
 
@@ -40,7 +40,7 @@
 
 #endif
 
-namespace ethash
+namespace vapash
 {
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 
@@ -95,4 +95,4 @@ struct be
 };
 
 #endif
-}  // namespace ethash
+}  // namespace vapash

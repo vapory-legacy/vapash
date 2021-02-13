@@ -1,4 +1,4 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
@@ -7,29 +7,29 @@
 /// API design decisions:
 ///
 /// 1. Signed integer type is used whenever the size of the type is not
-///    restricted by the Ethash specification.
+///    restricted by the Vapash specification.
 ///    See http://www.aristeia.com/Papers/C++ReportColumns/sep95.pdf.
 ///    See https://stackoverflow.com/questions/10168079/why-is-size-t-unsigned/.
 ///    See https://github.com/Microsoft/GSL/issues/171.
 
 #pragma once
 
-#include <ethash/ethash.h>
-#include <ethash/hash_types.hpp>
+#include <vapash/vapash.h>
+#include <vapash/hash_types.hpp>
 
 #include <cstdint>
 #include <cstring>
 #include <memory>
 
-namespace ethash
+namespace vapash
 {
-static constexpr int epoch_length = ETHASH_EPOCH_LENGTH;
-static constexpr int light_cache_item_size = ETHASH_LIGHT_CACHE_ITEM_SIZE;
-static constexpr int full_dataset_item_size = ETHASH_FULL_DATASET_ITEM_SIZE;
-static constexpr int num_dataset_accesses = ETHASH_NUM_DATASET_ACCESSES;
+static constexpr int epoch_length = VAPASH_EPOCH_LENGTH;
+static constexpr int light_cache_item_size = VAPASH_LIGHT_CACHE_ITEM_SIZE;
+static constexpr int full_dataset_item_size = VAPASH_FULL_DATASET_ITEM_SIZE;
+static constexpr int num_dataset_accesses = VAPASH_NUM_DATASET_ACCESSES;
 
-using epoch_context = ethash_epoch_context;
-using epoch_context_full = ethash_epoch_context_full;
+using epoch_context = vapash_epoch_context;
+using epoch_context_full = vapash_epoch_context_full;
 
 /// Constructs a 256-bit hash from an array of bytes.
 ///
@@ -63,14 +63,14 @@ struct search_result
 };
 
 
-/// Alias for ethash_calculate_light_cache_num_items().
-static constexpr auto calculate_light_cache_num_items = ethash_calculate_light_cache_num_items;
+/// Alias for vapash_calculate_light_cache_num_items().
+static constexpr auto calculate_light_cache_num_items = vapash_calculate_light_cache_num_items;
 
-/// Alias for ethash_calculate_full_dataset_num_items().
-static constexpr auto calculate_full_dataset_num_items = ethash_calculate_full_dataset_num_items;
+/// Alias for vapash_calculate_full_dataset_num_items().
+static constexpr auto calculate_full_dataset_num_items = vapash_calculate_full_dataset_num_items;
 
-/// Alias for ethash_calculate_epoch_seed().
-static constexpr auto calculate_epoch_seed = ethash_calculate_epoch_seed;
+/// Alias for vapash_calculate_epoch_seed().
+static constexpr auto calculate_epoch_seed = vapash_calculate_epoch_seed;
 
 
 /// Calculates the epoch number out of the block number.
@@ -102,23 +102,23 @@ inline constexpr uint64_t get_full_dataset_size(int num_items) noexcept
 }
 
 /// Owned unique pointer to an epoch context.
-using epoch_context_ptr = std::unique_ptr<epoch_context, decltype(&ethash_destroy_epoch_context)>;
+using epoch_context_ptr = std::unique_ptr<epoch_context, decltype(&vapash_destroy_epoch_context)>;
 
 using epoch_context_full_ptr =
-    std::unique_ptr<epoch_context_full, decltype(&ethash_destroy_epoch_context_full)>;
+    std::unique_ptr<epoch_context_full, decltype(&vapash_destroy_epoch_context_full)>;
 
-/// Creates Ethash epoch context.
+/// Creates Vapash epoch context.
 ///
-/// This is a wrapper for ethash_create_epoch_number C function that returns
+/// This is a wrapper for vapash_create_epoch_number C function that returns
 /// the context as a smart pointer which handles the destruction of the context.
 inline epoch_context_ptr create_epoch_context(int epoch_number) noexcept
 {
-    return {ethash_create_epoch_context(epoch_number), ethash_destroy_epoch_context};
+    return {vapash_create_epoch_context(epoch_number), vapash_destroy_epoch_context};
 }
 
 inline epoch_context_full_ptr create_epoch_context_full(int epoch_number) noexcept
 {
-    return {ethash_create_epoch_context_full(epoch_number), ethash_destroy_epoch_context_full};
+    return {vapash_create_epoch_context_full(epoch_number), vapash_destroy_epoch_context_full};
 }
 
 
@@ -145,7 +145,7 @@ search_result search(const epoch_context_full& context, const hash256& header_ha
 /// seed hash instead of epoch number to workers. This function tries to recover
 /// the epoch number from this seed hash.
 ///
-/// @param seed  Ethash seed hash.
+/// @param seed  Vapash seed hash.
 /// @return      The epoch number or -1 if not found.
 int find_epoch_number(const hash256& seed) noexcept;
 
@@ -155,4 +155,4 @@ const epoch_context& get_global_epoch_context(int epoch_number);
 
 /// Get global shared epoch context with full dataset initialized.
 const epoch_context_full& get_global_epoch_context_full(int epoch_number);
-}  // namespace ethash
+}  // namespace vapash

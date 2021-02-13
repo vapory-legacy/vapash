@@ -1,22 +1,22 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
-#include "ethash-internal.hpp"
+#include "vapash-internal.hpp"
 
 #include "bit_manipulation.h"
 #include "endianness.hpp"
 #include "primes.h"
 #include "support/attributes.h"
-#include <ethash/keccak.hpp>
-#include <ethash/progpow.hpp>
+#include <vapash/keccak.hpp>
+#include <vapash/progpow.hpp>
 
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
 #include <limits>
 
-namespace ethash
+namespace vapash
 {
 // Internal constants:
 constexpr static int light_cache_init_size = 1 << 24;
@@ -27,10 +27,10 @@ constexpr static int full_dataset_growth = 1 << 23;
 constexpr static int full_dataset_item_parents = 256;
 
 // Verify constants:
-static_assert(sizeof(hash512) == ETHASH_LIGHT_CACHE_ITEM_SIZE, "");
-static_assert(sizeof(hash1024) == ETHASH_FULL_DATASET_ITEM_SIZE, "");
-static_assert(light_cache_item_size == ETHASH_LIGHT_CACHE_ITEM_SIZE, "");
-static_assert(full_dataset_item_size == ETHASH_FULL_DATASET_ITEM_SIZE, "");
+static_assert(sizeof(hash512) == VAPASH_LIGHT_CACHE_ITEM_SIZE, "");
+static_assert(sizeof(hash1024) == VAPASH_FULL_DATASET_ITEM_SIZE, "");
+static_assert(light_cache_item_size == VAPASH_LIGHT_CACHE_ITEM_SIZE, "");
+static_assert(full_dataset_item_size == VAPASH_FULL_DATASET_ITEM_SIZE, "");
 
 
 namespace
@@ -373,21 +373,21 @@ search_result search(const epoch_context_full& context, const hash256& header_ha
     }
     return {};
 }
-}  // namespace ethash
+}  // namespace vapash
 
-using namespace ethash;
+using namespace vapash;
 
 extern "C" {
 
-ethash_hash256 ethash_calculate_epoch_seed(int epoch_number) noexcept
+vapash_hash256 vapash_calculate_epoch_seed(int epoch_number) noexcept
 {
-    ethash_hash256 epoch_seed = {};
+    vapash_hash256 epoch_seed = {};
     for (int i = 0; i < epoch_number; ++i)
-        epoch_seed = ethash_keccak256_32(epoch_seed.bytes);
+        epoch_seed = vapash_keccak256_32(epoch_seed.bytes);
     return epoch_seed;
 }
 
-int ethash_calculate_light_cache_num_items(int epoch_number) noexcept
+int vapash_calculate_light_cache_num_items(int epoch_number) noexcept
 {
     static constexpr int item_size = sizeof(hash512);
     static constexpr int num_items_init = light_cache_init_size / item_size;
@@ -398,11 +398,11 @@ int ethash_calculate_light_cache_num_items(int epoch_number) noexcept
         light_cache_growth % item_size == 0, "light_cache_growth not multiple of item size");
 
     int num_items_upper_bound = num_items_init + epoch_number * num_items_growth;
-    int num_items = ethash_find_largest_prime(num_items_upper_bound);
+    int num_items = vapash_find_largest_prime(num_items_upper_bound);
     return num_items;
 }
 
-int ethash_calculate_full_dataset_num_items(int epoch_number) noexcept
+int vapash_calculate_full_dataset_num_items(int epoch_number) noexcept
 {
     static constexpr int item_size = sizeof(hash1024);
     static constexpr int num_items_init = full_dataset_init_size / item_size;
@@ -413,26 +413,26 @@ int ethash_calculate_full_dataset_num_items(int epoch_number) noexcept
         full_dataset_growth % item_size == 0, "full_dataset_growth not multiple of item size");
 
     int num_items_upper_bound = num_items_init + epoch_number * num_items_growth;
-    int num_items = ethash_find_largest_prime(num_items_upper_bound);
+    int num_items = vapash_find_largest_prime(num_items_upper_bound);
     return num_items;
 }
 
-epoch_context* ethash_create_epoch_context(int epoch_number) noexcept
+epoch_context* vapash_create_epoch_context(int epoch_number) noexcept
 {
     return generic::create_epoch_context(build_light_cache, epoch_number, false);
 }
 
-epoch_context_full* ethash_create_epoch_context_full(int epoch_number) noexcept
+epoch_context_full* vapash_create_epoch_context_full(int epoch_number) noexcept
 {
     return generic::create_epoch_context(build_light_cache, epoch_number, true);
 }
 
-void ethash_destroy_epoch_context_full(epoch_context_full* context) noexcept
+void vapash_destroy_epoch_context_full(epoch_context_full* context) noexcept
 {
-    ethash_destroy_epoch_context(context);
+    vapash_destroy_epoch_context(context);
 }
 
-void ethash_destroy_epoch_context(epoch_context* context) noexcept
+void vapash_destroy_epoch_context(epoch_context* context) noexcept
 {
     context->~epoch_context();
     std::free(context);

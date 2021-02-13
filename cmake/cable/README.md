@@ -33,7 +33,7 @@ If you are not familiar with managing dependencies with git subtree read the
 #### To install
 
 ```sh
-git remote add cable https://github.com/ethereum/cable
+git remote add cable https://github.com/vaporyco/cable
 git subtree add --prefix cmake/cable cable master --squash
 ```
 
@@ -48,7 +48,7 @@ git subtree pull --prefix cmake/cable cable master --squash
 Include the Cable library as [git submodule] in your project.
 
 ```sh
-git submodule add https://github.com/ethereum/cable cmake/cable
+git submodule add https://github.com/vaporyco/cable cmake/cable
 ```
 
 ## Usage

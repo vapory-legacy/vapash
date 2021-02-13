@@ -1,4 +1,4 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
@@ -6,13 +6,13 @@
 ///
 /// ProgPoW API
 ///
-/// This file provides the public API for ProgPoW as the Ethash API extension.
+/// This file provides the public API for ProgPoW as the Vapash API extension.
 
-#include <ethash/ethash.hpp>
+#include <vapash/vapash.hpp>
 
 namespace progpow
 {
-using namespace ethash;  // Include ethash namespace.
+using namespace vapash;  // Include vapash namespace.
 
 constexpr int period_length = 50;
 constexpr uint32_t num_regs = 32;

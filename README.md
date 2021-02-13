@@ -1,8 +1,8 @@
-# Ethash
+# Vapash
 
 [![readme style standard](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-> C/C++ implementation of Ethash – the Ethereum Proof of Work algorithm
+> C/C++ implementation of Vapash – the Vapory Proof of Work algorithm
 
 
 ## Table of Contents
@@ -28,7 +28,7 @@ cmake --build .
 
 ## Usage
 
-See [ethash.hpp] for list of exported function and documentation.
+See [vapash.hpp] for list of exported function and documentation.
 
 
 ## Test vectors
@@ -39,7 +39,7 @@ See [ethash.hpp] for list of exported function and documentation.
 ## Optimizations
 
 This section decscribes the optimizations, modification and tweaks applied
-in this library in relation to [Ethash reference implementation].
+in this library in relation to [Vapash reference implementation].
 
 The library contains a set of micro-benchmarks. Build and run `bench` tool.
 
@@ -69,5 +69,5 @@ Licensed under the [Apache License, Version 2.0].
 
 [@chfast]: https://github.com/chfast
 [Apache License, Version 2.0]: LICENSE
-[ethash.hpp]: include/ethash/ethash.hpp
-[Ethash reference implementation]: https://github.com/ethereum/wiki/wiki/Ethash
+[vapash.hpp]: include/vapash/vapash.hpp
+[Vapash reference implementation]: https://github.com/vaporyco/wiki/wiki/Vapash

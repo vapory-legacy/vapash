@@ -54,10 +54,10 @@ defaults:
 
   build-tests: &build-tests
     run:
-      name: "Build ethash-test"
+      name: "Build vapash-test"
       working_directory: ~/build
       command: |
-        cmake --build . --target ethash-test -- -j $BUILD_PARALLEL_JOBS
+        cmake --build . --target vapash-test -- -j $BUILD_PARALLEL_JOBS
 
   test: &test
     run:
@@ -65,9 +65,9 @@ defaults:
       working_directory: ~/build
       command: |
         if [ -z "$GTEST_FILTER" ]; then
-          test/ethash-test
+          test/vapash-test
         else
-          test/ethash-test --gtest_filter=$GTEST_FILTER
+          test/vapash-test --gtest_filter=$GTEST_FILTER
         fi
 
   test-cmake-config: &test-cmake-config
@@ -77,21 +77,21 @@ defaults:
       command: |
         cmake -DCMAKE_PREFIX_PATH=/tmp/local .
         cmake --build .
-        ./ethash-cmake-config-test
+        ./vapash-cmake-config-test
 
   test-mips64: &test-mips64
     run:
       name: "Test (mips64)"
       working_directory: ~/build
       command: |
-        qemu-mips64 -L /usr/mips64-linux-gnuabi64 test/ethash-test
+        qemu-mips64 -L /usr/mips64-linux-gnuabi64 test/vapash-test
 
   benchmark: &benchmark
     run:
       name: "Benchmark"
       working_directory: ~/build
       command: |
-        test/ethash-bench
+        test/vapash-bench
 
   upload-coverage-data: &upload-coverage-data
     run:
@@ -135,7 +135,7 @@ jobs:
       - BUILD_TYPE: Debug
       - CMAKE_OPTIONS: -DCOVERAGE=ON
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *configure
@@ -151,7 +151,7 @@ jobs:
       - CMAKE_OPTIONS: -DSANITIZE=undefined,integer,nullability
       - UBSAN_OPTIONS: halt_on_error=1
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *configure
@@ -167,7 +167,7 @@ jobs:
       - CMAKE_OPTIONS: -DSANITIZE=address
       - ASAN_OPTIONS: allocator_may_return_null=1
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *configure
@@ -181,7 +181,7 @@ jobs:
       - CC:  gcc-4.8
       - BUILD_PARALLEL_JOBS: 2
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *configure
@@ -194,9 +194,9 @@ jobs:
       - CXX: clang++-3.8
       - CC:  clang-3.8
       - BUILD_PARALLEL_JOBS: 2
-      - CMAKE_OPTIONS: -DETHASH_BUILD_TESTS=OFF
+      - CMAKE_OPTIONS: -DVAPASH_BUILD_TESTS=OFF
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *configure
@@ -210,7 +210,7 @@ jobs:
       - CMAKE_OPTIONS: -DSANITIZE=address
       - GTEST_FILTER: -*_oom
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *install-m32
@@ -225,7 +225,7 @@ jobs:
       - CMAKE_OPTIONS: -DSANITIZE=undefined
       - UBSAN_OPTIONS: halt_on_error=1
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *install-m32
@@ -239,20 +239,20 @@ jobs:
       - TEST_PARALLEL_JOBS: 2
       - CMAKE_OPTIONS: -DTOOLCHAIN=mips64 -DCMAKE_EXE_LINKER_FLAGS=-static
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *install-mips64
       - *configure
       - *build-tests
       - store_artifacts:
-          path: ~/build/test/ethash-test
-          destination: ethash-test
+          path: ~/build/test/vapash-test
+          destination: vapash-test
       - run:
           name: "Test mips64"
           working_directory: ~/build
           command: |  # Software emulation in qemu will not handle threads.
-            qemu-mips64 test/ethash-test --gtest_filter='-*_multithreaded.*'
+            qemu-mips64 test/vapash-test --gtest_filter='-*_multithreaded.*'
 
   powerpc64:
     environment:
@@ -260,20 +260,20 @@ jobs:
       - TEST_PARALLEL_JOBS: 2
       - CMAKE_OPTIONS: -DTOOLCHAIN=powerpc64 -DCMAKE_EXE_LINKER_FLAGS=-static
     docker:
-      - image: ethereum/cpp-build-env
+      - image: vapory/cpp-build-env
     steps:
       - checkout
       - *install-powerpc64
       - *configure
       - *build-tests
       - store_artifacts:
-          path: ~/build/test/ethash-test
-          destination: ethash-test
+          path: ~/build/test/vapash-test
+          destination: vapash-test
       - run:
           name: "Test powerpc64"
           working_directory: ~/build
           command: |  # Software emulation in qemu will not handle threads.
-            qemu-ppc64 test/ethash-test --gtest_filter='-*_multithreaded.*'
+            qemu-ppc64 test/vapash-test --gtest_filter='-*_multithreaded.*'
 
 
   macos-xcode-tsan:
@@ -293,7 +293,7 @@ jobs:
 
 workflows:
   version: 2
-  ethash:
+  vapash:
     jobs:
       - linux-gcc6-coverage
       - linux-clang6-ubsan
