@@ -1,8 +1,8 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
-#include <ethash/ethash.hpp>
+#include <vapash/vapash.hpp>
 
 #include <atomic>
 #include <chrono>
@@ -19,44 +19,44 @@ using timer = std::chrono::steady_clock;
 
 namespace
 {
-class ethash_interface
+class vapash_interface
 {
 public:
-    virtual ~ethash_interface() noexcept = default;
+    virtual ~vapash_interface() noexcept = default;
 
-    virtual void search(const ethash::hash256& header_hash, uint64_t nonce, size_t iterations) const
+    virtual void search(const vapash::hash256& header_hash, uint64_t nonce, size_t iterations) const
         noexcept = 0;
 };
 
-class ethash_light : public ethash_interface
+class vapash_light : public vapash_interface
 {
-    const ethash::epoch_context& context;
+    const vapash::epoch_context& context;
 
 public:
-    explicit ethash_light(int epoch_number)
-      : context(ethash::get_global_epoch_context(epoch_number))
+    explicit vapash_light(int epoch_number)
+      : context(vapash::get_global_epoch_context(epoch_number))
     {}
 
-    void search(const ethash::hash256& header_hash, uint64_t nonce, size_t iterations) const
+    void search(const vapash::hash256& header_hash, uint64_t nonce, size_t iterations) const
         noexcept override
     {
-        ethash::search_light(context, header_hash, {}, nonce, iterations);
+        vapash::search_light(context, header_hash, {}, nonce, iterations);
     }
 };
 
-class ethash_full : public ethash_interface
+class vapash_full : public vapash_interface
 {
-    const ethash::epoch_context_full& context;
+    const vapash::epoch_context_full& context;
 
 public:
-    explicit ethash_full(int epoch_number)
-      : context(ethash::get_global_epoch_context_full(epoch_number))
+    explicit vapash_full(int epoch_number)
+      : context(vapash::get_global_epoch_context_full(epoch_number))
     {}
 
-    void search(const ethash::hash256& header_hash, uint64_t nonce, size_t iterations) const
+    void search(const vapash::hash256& header_hash, uint64_t nonce, size_t iterations) const
         noexcept override
     {
-        ethash::search(context, header_hash, {}, nonce, iterations);
+        vapash::search(context, header_hash, {}, nonce, iterations);
     }
 };
 
@@ -64,10 +64,10 @@ public:
 std::atomic<int> shared_block_number{0};
 std::atomic<int> num_hashes{0};
 
-void worker(bool light, const ethash::hash256& header_hash, uint64_t start_nonce, int batch_size)
+void worker(bool light, const vapash::hash256& header_hash, uint64_t start_nonce, int batch_size)
 {
     int current_epoch = -1;
-    std::unique_ptr<ethash_interface> ei;
+    std::unique_ptr<vapash_interface> ei;
     uint64_t i = 0;
     size_t w = static_cast<size_t>(batch_size);
     while (true)
@@ -76,12 +76,12 @@ void worker(bool light, const ethash::hash256& header_hash, uint64_t start_nonce
         if (block_number < 0)
             break;
 
-        int e = ethash::get_epoch_number(block_number);
+        int e = vapash::get_epoch_number(block_number);
 
         if (current_epoch != e)
         {
             ei.reset(
-                light ? static_cast<ethash_interface*>(new ethash_light{e}) : new ethash_full{e});
+                light ? static_cast<vapash_interface*>(new vapash_light{e}) : new vapash_full{e});
             current_epoch = e;
         }
 
@@ -135,7 +135,7 @@ int main(int argc, const char* argv[])
     const uint64_t divisor = static_cast<uint64_t>(num_threads);
     const uint64_t nonce_space_per_thread = std::numeric_limits<uint64_t>::max() / divisor;
 
-    const ethash::hash256 header_hash{};
+    const vapash::hash256 header_hash{};
 
     shared_block_number.store(start_block_number, std::memory_order_relaxed);
     std::vector<std::future<void>> futures;
@@ -155,7 +155,7 @@ int main(int argc, const char* argv[])
     auto start_time = timer::now();
     auto time = start_time;
     static constexpr int khps_mbps_ratio =
-        ethash::num_dataset_accesses * ethash::full_dataset_item_size / 1024;
+        vapash::num_dataset_accesses * vapash::full_dataset_item_size / 1024;
 
     double current_duration = 0;
     double all_duration = 0;
@@ -180,7 +180,7 @@ int main(int argc, const char* argv[])
 
         shared_block_number.store(block_number + 1, std::memory_order_relaxed);
 
-        int e = ethash::get_epoch_number(block_number);
+        int e = vapash::get_epoch_number(block_number);
 
         current_khps = double(current_hashes) / current_duration;
         average_khps = double(all_hashes) / all_duration;

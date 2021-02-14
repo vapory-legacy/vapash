@@ -1,15 +1,15 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
-#include <ethash/ethash.hpp>
-#include <ethash/version.h>
+#include <vapash/vapash.hpp>
+#include <vapash/version.h>
 
 int main()
 {
-    static_assert(sizeof(ethash::version) >= 6, "incorrect ethash::version");
+    static_assert(sizeof(vapash::version) >= 6, "incorrect vapash::version");
 
     uint8_t seed_bytes[32] = {0};
-    ethash::hash256 seed = ethash::hash256_from_bytes(seed_bytes);
-    return ethash::find_epoch_number(seed);
+    vapash::hash256 seed = vapash::hash256_from_bytes(seed_bytes);
+    return vapash::find_epoch_number(seed);
 }

@@ -1,14 +1,14 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma clang diagnostic ignored "-Wpedantic"
 
-#include <ethash/endianness.hpp>
-#include <ethash/ethash-internal.hpp>
-#include <ethash/ethash.hpp>
-#include <ethash/keccak.hpp>
+#include <vapash/endianness.hpp>
+#include <vapash/vapash-internal.hpp>
+#include <vapash/vapash.hpp>
+#include <vapash/keccak.hpp>
 
 #include "helpers.hpp"
 #include "test_cases.hpp"
@@ -18,7 +18,7 @@
 #include <array>
 #include <future>
 
-using namespace ethash;
+using namespace vapash;
 
 namespace
 {
@@ -37,7 +37,7 @@ epoch_context_ptr create_epoch_context_mock(int epoch_number)
 
     static const size_t context_alloc_size = std::max(sizeof(epoch_context), sizeof(hash512));
 
-    // The copy of ethash_create_epoch_context() but without light cache building:
+    // The copy of vapash_create_epoch_context() but without light cache building:
 
     const int light_cache_num_items = calculate_light_cache_num_items(epoch_number);
     const size_t light_cache_size = get_light_cache_size(light_cache_num_items);
@@ -54,7 +54,7 @@ epoch_context_ptr create_epoch_context_mock(int epoch_number)
         nullptr,
         calculate_full_dataset_num_items(epoch_number),
     };
-    return {context, ethash_destroy_epoch_context};
+    return {context, vapash_destroy_epoch_context};
 }
 
 hash512 copy(const hash512& h) noexcept
@@ -63,12 +63,12 @@ hash512 copy(const hash512& h) noexcept
 }
 }
 
-TEST(ethash, revision)
+TEST(vapash, revision)
 {
-    static_assert(ethash::revision[0] == '2', "");
-    static_assert(ethash::revision[1] == '3', "");
-    EXPECT_EQ(ethash::revision, "23");
-    EXPECT_EQ(ethash::revision, (std::string{"23"}));
+    static_assert(vapash::revision[0] == '2', "");
+    static_assert(vapash::revision[1] == '3', "");
+    EXPECT_EQ(vapash::revision, "23");
+    EXPECT_EQ(vapash::revision, (std::string{"23"}));
 }
 
 TEST(hash, hash256_from_bytes)
@@ -104,8 +104,8 @@ struct dataset_size_test_case
     uint64_t full_dataset_size;
 };
 
-/// Test cases for dataset sizes are random picked from generated ethash sizes.
-/// See https://github.com/ethereum/wiki/wiki/Ethash#data-sizes.
+/// Test cases for dataset sizes are random picked from generated vapash sizes.
+/// See https://github.com/vaporyco/wiki/wiki/Vapash#data-sizes.
 static dataset_size_test_case dataset_size_test_cases[] = {
     {0, 16776896, 1073739904},
     {14, 18611392, 1191180416},
@@ -163,7 +163,7 @@ static dataset_size_test_case dataset_size_test_cases[] = {
     {32639, 4294836032, 274869514624},
 };
 
-TEST(ethash, light_cache_size)
+TEST(vapash, light_cache_size)
 {
     for (const auto& t : dataset_size_test_cases)
     {
@@ -173,7 +173,7 @@ TEST(ethash, light_cache_size)
     }
 }
 
-TEST(ethash, full_dataset_size)
+TEST(vapash, full_dataset_size)
 {
     for (const auto& t : dataset_size_test_cases)
     {
@@ -199,7 +199,7 @@ static epoch_seed_test_case epoch_seed_test_cases[] = {
     {29999, "ee1d0f61b054dff0f3025ebba821d405c8dc19a983e582e9fa5436fc3e7a07d8"},
 };
 
-TEST(ethash, calculate_epoch_seed)
+TEST(vapash, calculate_epoch_seed)
 {
     for (auto& t : epoch_seed_test_cases)
     {
@@ -209,7 +209,7 @@ TEST(ethash, calculate_epoch_seed)
 }
 
 
-TEST(ethash, find_epoch_number_double_ascending)
+TEST(vapash, find_epoch_number_double_ascending)
 {
     const hash256 seed_29998 = to_hash256(epoch_seed_test_cases[4].epoch_seed_hex);
     const hash256 seed_29999 = to_hash256(epoch_seed_test_cases[5].epoch_seed_hex);
@@ -222,7 +222,7 @@ TEST(ethash, find_epoch_number_double_ascending)
     EXPECT_EQ(epoch, 29999);
 }
 
-TEST(ethash, find_epoch_number_double_descending)
+TEST(vapash, find_epoch_number_double_descending)
 {
     const hash256 seed_29998 = to_hash256(epoch_seed_test_cases[4].epoch_seed_hex);
     const hash256 seed_29999 = to_hash256(epoch_seed_test_cases[5].epoch_seed_hex);
@@ -235,7 +235,7 @@ TEST(ethash, find_epoch_number_double_descending)
     EXPECT_EQ(epoch, 29998);
 }
 
-TEST(ethash, find_epoch_number_sequential)
+TEST(vapash, find_epoch_number_sequential)
 {
     hash256 seed = {};
     for (int i = 0; i < 30000; ++i)
@@ -246,7 +246,7 @@ TEST(ethash, find_epoch_number_sequential)
     }
 }
 
-TEST(ethash, find_epoch_number_sequential_gap)
+TEST(vapash, find_epoch_number_sequential_gap)
 {
     constexpr int start_epoch = 200;
     hash256 seed = calculate_epoch_seed(start_epoch);
@@ -258,7 +258,7 @@ TEST(ethash, find_epoch_number_sequential_gap)
     }
 }
 
-TEST(ethash, find_epoch_number_descending)
+TEST(vapash, find_epoch_number_descending)
 {
     for (int i = 2050; i >= 2000; --i)
     {
@@ -275,7 +275,7 @@ TEST(ethash, find_epoch_number_descending)
     }
 }
 
-TEST(ethash, find_epoch_number_invalid)
+TEST(vapash, find_epoch_number_invalid)
 {
     hash256 fake_seed = {};
     fake_seed.word32s[0] = 1;
@@ -283,14 +283,14 @@ TEST(ethash, find_epoch_number_invalid)
     EXPECT_EQ(epoch, -1);
 }
 
-TEST(ethash, find_epoch_number_epoch_too_high)
+TEST(vapash, find_epoch_number_epoch_too_high)
 {
     hash256 seed = calculate_epoch_seed(30000);
     int epoch = find_epoch_number(seed);
     EXPECT_EQ(epoch, -1);
 }
 
-TEST(ethash_multithreaded, find_epoch_number_sequential)
+TEST(vapash_multithreaded, find_epoch_number_sequential)
 {
     auto fn = [] {
         hash256 seed = {};
@@ -309,7 +309,7 @@ TEST(ethash_multithreaded, find_epoch_number_sequential)
         f.wait();
 }
 
-TEST(ethash, get_epoch_number)
+TEST(vapash, get_epoch_number)
 {
     EXPECT_EQ(get_epoch_number(0), 0);
     EXPECT_EQ(get_epoch_number(1), 0);
@@ -320,7 +320,7 @@ TEST(ethash, get_epoch_number)
     EXPECT_EQ(get_epoch_number(5000000), 166);
 }
 
-TEST(ethash, light_cache)
+TEST(vapash, light_cache)
 {
     struct light_cache_test_case
     {
@@ -345,7 +345,7 @@ TEST(ethash, light_cache)
     }
 }
 
-TEST(ethash, fake_dataset_partial_items)
+TEST(vapash, fake_dataset_partial_items)
 {
     struct full_dataset_item_test_case
     {
@@ -385,7 +385,7 @@ TEST(ethash, fake_dataset_partial_items)
     }
 }
 
-TEST(ethash, fake_dataset_items)
+TEST(vapash, fake_dataset_items)
 {
     struct full_dataset_item_test_case
     {
@@ -460,7 +460,7 @@ TEST(ethash, fake_dataset_items)
 }
 
 
-TEST(ethash, dataset_items_epoch13)
+TEST(vapash, dataset_items_epoch13)
 {
     struct full_dataset_item_test_case
     {
@@ -525,9 +525,9 @@ TEST(ethash, dataset_items_epoch13)
     }
 }
 
-TEST(ethash, verify_hash_light)
+TEST(vapash, verify_hash_light)
 {
-    epoch_context_ptr context{nullptr, ethash_destroy_epoch_context};
+    epoch_context_ptr context{nullptr, vapash_destroy_epoch_context};
 
     for (const auto& t : hash_test_cases)
     {
@@ -561,9 +561,9 @@ TEST(ethash, verify_hash_light)
     }
 }
 
-TEST(ethash, verify_hash)
+TEST(vapash, verify_hash)
 {
-    epoch_context_full_ptr context{nullptr, ethash_destroy_epoch_context_full};
+    epoch_context_full_ptr context{nullptr, vapash_destroy_epoch_context_full};
 
     for (const auto& t : hash_test_cases)
     {
@@ -592,9 +592,9 @@ TEST(ethash, verify_hash)
     }
 }
 
-TEST(ethash, verify_final_hash_only)
+TEST(vapash, verify_final_hash_only)
 {
-    auto& context = get_ethash_epoch_context_0();
+    auto& context = get_vapash_epoch_context_0();
     const hash256 header_hash = {};
     const hash256 mix_hash = {};
     uint64_t nonce = 3221208;
@@ -605,9 +605,9 @@ TEST(ethash, verify_final_hash_only)
     EXPECT_FALSE(verify(context, header_hash, mix_hash, nonce, boundary));
 }
 
-TEST(ethash, verify_boundary)
+TEST(vapash, verify_boundary)
 {
-    auto& context = get_ethash_epoch_context_0();
+    auto& context = get_vapash_epoch_context_0();
     hash256 example_header_hash =
         to_hash256("e74e5e8688d3c6f17885fa5e64eb6718046b57895a2a24c593593070ab71f5fd");
     uint64_t nonce = 6666;
@@ -633,7 +633,7 @@ TEST(ethash, verify_boundary)
     EXPECT_FALSE(verify(context, example_header_hash, r.mix_hash, nonce, boundary_lt));
 }
 
-TEST(ethash_multithreaded, small_dataset)
+TEST(vapash_multithreaded, small_dataset)
 {
     // This test creates an extremely small dataset for full search to discover
     // sync issues between threads.
@@ -661,7 +661,7 @@ TEST(ethash_multithreaded, small_dataset)
         EXPECT_EQ(f.get().nonce, 38444);
 }
 
-TEST(ethash, small_dataset)
+TEST(vapash, small_dataset)
 {
     constexpr int num_dataset_items = 501;
     const hash256 boundary =
@@ -751,7 +751,7 @@ bool restore_memory_limit()
 
 static constexpr bool arch64bit = sizeof(void*) == 8;
 
-TEST(ethash, create_context_oom)
+TEST(vapash, create_context_oom)
 {
     static constexpr int epoch = arch64bit ? 3000 : 300;
     static constexpr size_t expected_size = arch64bit ? 26239565696 : 3590324096;
@@ -762,7 +762,7 @@ TEST(ethash, create_context_oom)
     ASSERT_EQ(size, expected_size);
 
     ASSERT_TRUE(set_memory_limit(1024 * 1024 * 1024));
-    auto* context = ethash_create_epoch_context_full(epoch);
+    auto* context = vapash_create_epoch_context_full(epoch);
     ASSERT_TRUE(restore_memory_limit());
     EXPECT_EQ(context, nullptr);
 }
@@ -823,7 +823,7 @@ is_less_or_equal_test_case is_less_or_equal_test_cases[] = {
 };
 }  // namespace
 
-TEST(ethash, is_less_or_equal)
+TEST(vapash, is_less_or_equal)
 {
     for (const auto& t : is_less_or_equal_test_cases)
     {

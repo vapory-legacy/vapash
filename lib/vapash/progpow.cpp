@@ -1,14 +1,14 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
-#include <ethash/progpow.hpp>
+#include <vapash/progpow.hpp>
 
 #include "bit_manipulation.h"
 #include "endianness.hpp"
-#include "ethash-internal.hpp"
+#include "vapash-internal.hpp"
 #include "kiss99.hpp"
-#include <ethash/keccak.hpp>
+#include <vapash/keccak.hpp>
 
 #include <array>
 
@@ -43,7 +43,7 @@ hash256 keccak_progpow_256(
     for (uint32_t mix_word : mix_hash.word32s)
         state[i++] = le::uint32(mix_word);
 
-    ethash_keccakf800(state);
+    vapash_keccakf800(state);
 
     hash256 output;
     for (i = 0; i < num_words; ++i)

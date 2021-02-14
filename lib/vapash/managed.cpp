@@ -1,8 +1,8 @@
-// ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+// vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 // Copyright 2018 Pawel Bylica.
 // Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
-#include "ethash-internal.hpp"
+#include "vapash-internal.hpp"
 
 #include <memory>
 #include <mutex>
@@ -19,7 +19,7 @@
 #define ATTRIBUTE_NOINLINE
 #endif
 
-namespace ethash
+namespace vapash
 {
 namespace
 {
@@ -97,4 +97,4 @@ const epoch_context_full& get_global_epoch_context_full(int epoch_number)
 
     return *thread_local_context_full;
 }
-}  // namespace ethash
+}  // namespace vapash

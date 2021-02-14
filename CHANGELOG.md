@@ -5,7 +5,7 @@
  - Added: [[#121](https://github.com/chfast/ethash/pull/121)]
    The public `version.h` header with information about the ethash library version.
  - Added: [[#121](https://github.com/chfast/ethash/pull/121)]
-   Ethash and ProgPoW revisions exposed as `{ethash,progpow}::revision` constants.
+   Vapash and ProgPoW revisions exposed as `{ethash,progpow}::revision` constants.
 
 ## [0.4.2] - 2019-01-24
 

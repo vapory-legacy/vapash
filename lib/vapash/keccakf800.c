@@ -1,4 +1,4 @@
-/* ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+/* vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
  * Copyright 2018 Pawel Bylica.
  * Licensed under the Apache License, Version 2.0. See the LICENSE file.
  */
@@ -35,9 +35,9 @@ static const uint32_t round_constants[22] = {
     0x00008080,
 };
 
-void ethash_keccakf800(uint32_t state[25])
+void vapash_keccakf800(uint32_t state[25])
 {
-    /* The implementation directly translated from ethash_keccakf1600. */
+    /* The implementation directly translated from vapash_keccakf1600. */
 
     int round;
 

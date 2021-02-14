@@ -1,4 +1,4 @@
-# ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+# vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
 # Copyright 2018 Pawel Bylica.
 # Licensed under the Apache License, Version 2.0. See the LICENSE file.
 
@@ -30,7 +30,7 @@ HunterGate(
     SHA1 "6e3cb4c333b76803a83c56fcbca3b0bfd9f96f27"
 )
 
-project(ethash)
+project(vapash)
 set(PROJECT_VERSION 0.4.3)
 
 cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release RelWithDebInfo Debug)
@@ -40,8 +40,8 @@ if(CABLE_COMPILER_GNULIKE)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Og")
 
-    option(ETHASH_NATIVE "Build for native CPU" OFF)
-    if(ETHASH_NATIVE)
+    option(VAPASH_NATIVE "Build for native CPU" OFF)
+    if(VAPASH_NATIVE)
         add_compile_options(-march=native)
     elseif(NOT CMAKE_CROSSCOMPILING)
         # Tune for currently most common CPUs (flag not supported in cross compilation).
@@ -52,17 +52,17 @@ elseif(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
 endif()
 
-option(ETHASH_INSTALL_CMAKE_CONFIG "Install CMake configuration scripts for find_package(CONFIG)" ON)
+option(VAPASH_INSTALL_CMAKE_CONFIG "Install CMake configuration scripts for find_package(CONFIG)" ON)
 
-option(ETHASH_FUZZING "Build with fuzzer instrumentation" OFF)
-if(ETHASH_FUZZING)
+option(VAPASH_FUZZING "Build with fuzzer instrumentation" OFF)
+if(VAPASH_FUZZING)
     set(CMAKE_EXE_LINKER_FLAGS "-fsanitize=fuzzer-no-link ${CMAKE_EXE_LINKER_FLAGS}")
     add_compile_options(-fno-omit-frame-pointer -fsanitize=fuzzer,undefined,integer -fno-sanitize-recover=all)
 endif()
 
-add_subdirectory(lib/ethash)
+add_subdirectory(lib/vapash)
 
-option(ETHASH_BUILD_TESTS "Build unit tests" ON)
-if(ETHASH_BUILD_TESTS)
+option(VAPASH_BUILD_TESTS "Build unit tests" ON)
+if(VAPASH_BUILD_TESTS)
     add_subdirectory(test)
 endif()

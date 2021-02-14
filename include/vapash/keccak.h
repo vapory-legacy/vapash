@@ -1,11 +1,11 @@
-/* ethash: C/C++ implementation of Ethash, the Ethereum Proof of Work algorithm.
+/* vapash: C/C++ implementation of Vapash, the Vapory Proof of Work algorithm.
  * Copyright 2018 Pawel Bylica.
  * Licensed under the Apache License, Version 2.0. See the LICENSE file.
  */
 
 #pragma once
 
-#include <ethash/hash_types.h>
+#include <vapash/hash_types.h>
 
 #include <stddef.h>
 
@@ -27,7 +27,7 @@ extern "C" {
  *
  * @param state  The state of 25 64-bit words on which the permutation is to be performed.
  */
-void ethash_keccakf1600(uint64_t state[25]) NOEXCEPT;
+void vapash_keccakf1600(uint64_t state[25]) NOEXCEPT;
 
 /**
  * The Keccak-f[800] function.
@@ -37,12 +37,12 @@ void ethash_keccakf1600(uint64_t state[25]) NOEXCEPT;
  *
  * @param state  The state of 25 32-bit words on which the permutation is to be performed.
  */
-void ethash_keccakf800(uint32_t state[25]) NOEXCEPT;
+void vapash_keccakf800(uint32_t state[25]) NOEXCEPT;
 
-union ethash_hash256 ethash_keccak256(const uint8_t* data, size_t size) NOEXCEPT;
-union ethash_hash256 ethash_keccak256_32(const uint8_t data[32]) NOEXCEPT;
-union ethash_hash512 ethash_keccak512(const uint8_t* data, size_t size) NOEXCEPT;
-union ethash_hash512 ethash_keccak512_64(const uint8_t data[64]) NOEXCEPT;
+union vapash_hash256 vapash_keccak256(const uint8_t* data, size_t size) NOEXCEPT;
+union vapash_hash256 vapash_keccak256_32(const uint8_t data[32]) NOEXCEPT;
+union vapash_hash512 vapash_keccak512(const uint8_t* data, size_t size) NOEXCEPT;
+union vapash_hash512 vapash_keccak512_64(const uint8_t data[64]) NOEXCEPT;
 
 #ifdef __cplusplus
 }
